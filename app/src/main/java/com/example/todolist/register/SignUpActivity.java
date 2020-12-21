@@ -1,7 +1,9 @@
-package com.example.todolist;
+package com.example.todolist.register;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +13,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.todolist.MainActivity;
+import com.example.todolist.R;
+import com.example.todolist.data.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -24,6 +30,9 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etUsername, etEmail, etPassword;
 
     private FirebaseAuth auth;
+    private static final String TAG = "SignUpActivity_";
+    private FirebaseFirestore mDatabase;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +45,11 @@ public class SignUpActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         btnCreate = findViewById(R.id.btnCreate);
 
-        auth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading ...");
 
+        auth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        String username = etUsername.getText().toString().trim();
+        final String username = etUsername.getText().toString().trim();
 
         if (username.equals("")) {
             Toast.makeText(this, "Enter username !!", Toast.LENGTH_SHORT).show();
@@ -69,14 +81,15 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Enter password !!", Toast.LENGTH_SHORT).show();
         } else {
 
+            progressDialog.show();
             auth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(SignUpActivity.this, "Welcome !", Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                            finish();
+                            createNewUser(username, authResult.getUser().getUid());
+
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -86,4 +99,31 @@ public class SignUpActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void createNewUser(String username, String uid) {
+
+        User user = new User(username, uid);
+
+        mDatabase.collection("users")
+                .document(uid)
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: new user created");
+                        progressDialog.dismiss();
+
+                        Toast.makeText(SignUpActivity.this, "Welcome !", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: error " + e.getMessage());
+                    }
+                });
+    }
+
 }
