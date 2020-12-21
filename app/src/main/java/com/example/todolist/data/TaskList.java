@@ -1,6 +1,6 @@
 package com.example.todolist.data;
 
-class TaskList {
+public class TaskList {
 
     private String title;
     private int size;

@@ -1,19 +1,19 @@
 package com.example.todolist.data;
 
-class ToDo {
+public class ToDo {
     private String title;
     private String description;
-    private boolean status;
+    private boolean checked;
     private String date;
     private String list_id;
 
     public ToDo() {
     }
 
-    public ToDo(String title, String description, boolean status, String date, String list_id) {
+    public ToDo(String title, String description, boolean checked, String date, String list_id) {
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.checked = checked;
         this.date = date;
         this.list_id = list_id;
     }
@@ -42,12 +42,12 @@ class ToDo {
         this.description = description;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isChecked() {
+        return checked;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     public String getDate() {
