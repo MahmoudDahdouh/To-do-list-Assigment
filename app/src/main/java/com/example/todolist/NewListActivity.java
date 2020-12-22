@@ -16,11 +16,12 @@ import com.example.todolist.data.TaskList;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NewListActivity extends AppCompatActivity {
 
-    private static final String TAG = "NewListActivity_";
+    private static final String TAG = "NewListActivity_tag";
     private EditText etEmailListTitle;
     private Button btnNewList;
     private ImageView btnBack;
@@ -30,7 +31,7 @@ public class NewListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_list);
 
-        etEmailListTitle = findViewById(R.id.etEmailListTitle);
+        etEmailListTitle = findViewById(R.id.etListTitle);
         btnNewList = findViewById(R.id.btnNewList);
         btnBack = findViewById(R.id.btnBack);
 
@@ -57,11 +58,13 @@ public class NewListActivity extends AppCompatActivity {
                     FirebaseFirestore database = FirebaseFirestore.getInstance();
                     FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                    TaskList newList = new TaskList(title, 0, auth.getUid());
+                    DocumentReference docRef = database.collection("list")
+                            .document();
 
-                    database.collection("task")
-                            .document()
-                            .set(newList)
+                    TaskList newList = new TaskList(docRef.getId(), title, 0, auth.getUid(), "" + System.currentTimeMillis());
+
+
+                    docRef.set(newList)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

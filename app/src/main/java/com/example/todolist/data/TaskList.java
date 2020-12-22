@@ -2,14 +2,36 @@ package com.example.todolist.data;
 
 public class TaskList {
 
+    private String id;
+
+
     private String title;
     private int size;
     private String uid;
+    private String date;
 
-    public TaskList(String title, int size, String uid) {
+    public TaskList(String id, String title, int size, String uid, String date) {
+        this.id = id;
         this.title = title;
         this.size = size;
         this.uid = uid;
+        this.date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public TaskList() {

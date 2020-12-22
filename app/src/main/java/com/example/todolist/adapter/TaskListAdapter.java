@@ -17,7 +17,6 @@ import java.util.List;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskListViewHolder> {
 
     private List<TaskList> taskList = new ArrayList<>();
-
     private OnItemClickListener mListener;
 
     public void setList(List<TaskList> TaskListList) {
@@ -47,7 +46,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String title);
+        void onItemClick(String id, String title, int size);
     }
 
     class TaskListViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +65,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onItemClick(taskList.get(getAdapterPosition()).getTitle());
+                    mListener.onItemClick(
+                            taskList.get(getAdapterPosition()).getId(),
+                            taskList.get(getAdapterPosition()).getTitle(),
+                            taskList.get(getAdapterPosition()).getSize()
+                    );
                 }
             });
         }

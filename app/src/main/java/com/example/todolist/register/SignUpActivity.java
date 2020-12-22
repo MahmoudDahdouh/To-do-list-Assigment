@@ -30,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etUsername, etEmail, etPassword;
 
     private FirebaseAuth auth;
-    private static final String TAG = "SignUpActivity_";
+    private static final String TAG = "SignUpActivity_tag";
     private FirebaseFirestore mDatabase;
     private ProgressDialog progressDialog;
 

@@ -1,6 +1,7 @@
 package com.example.todolist.data;
 
 public class ToDo {
+    private String id;
     private String title;
     private String description;
     private boolean checked;
@@ -10,7 +11,8 @@ public class ToDo {
     public ToDo() {
     }
 
-    public ToDo(String title, String description, boolean checked, String date, String list_id) {
+    public ToDo(String id, String title, String description, boolean checked, String date, String list_id) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.checked = checked;
@@ -56,5 +58,13 @@ public class ToDo {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -3,30 +3,30 @@ package com.example.todolist;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.adapter.TaskListAdapter;
 import com.example.todolist.data.TaskList;
 import com.example.todolist.register.LoginActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity_";
+    private static final String TAG = "MainActivity_tag";
 
     private TextView tvLogout;
     private FirebaseAuth auth;
@@ -68,10 +68,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, NewListActivity.class));
-
             }
         });
-
 
         tvLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +87,12 @@ public class MainActivity extends AppCompatActivity {
 
         adapter.setOnItemClickListener(new TaskListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String title) {
-                startActivity(new Intent(MainActivity.this, ListActivity.class));
+            public void onItemClick(String id, String title, int size) {
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra("list_title", title);
+                intent.putExtra("list_id", id);
+                intent.putExtra("list_size", size);
+                startActivity(intent);
             }
         });
     }
@@ -100,31 +102,45 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading ...");
         progressDialog.show();
 
-
-        database.collection("task")
+        database.collection("list")
                 .whereEqualTo("uid", uid)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        Log.d(TAG, "onSuccess: get all the list");
-                        Log.d(TAG, "onSuccess: " + queryDocumentSnapshots.toObjects(TaskList.class).size());
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                        List<TaskList> list = queryDocumentSnapshots.toObjects(TaskList.class);
-                        adapter.setList(list);
+                        if (value != null) {
+                            List<TaskList> list = value.toObjects(TaskList.class);
 
+                            if (list.size() != 0) {
+                                adapter.setList(list);
+                            } else {
+                                Toast.makeText(MainActivity.this, "No List", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
                         progressDialog.dismiss();
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                        progressDialog.dismiss();
-
                     }
                 });
+
+//                .get()
+//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        Log.d(TAG, "onSuccess: get all the list");
+//                        Log.d(TAG, "onSuccess: " + queryDocumentSnapshots.toObjects(TaskList.class).size());
+//
+//
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: " + e.getMessage());
+//                        progressDialog.dismiss();
+//
+//                    }
+//                });
 
     }
 }

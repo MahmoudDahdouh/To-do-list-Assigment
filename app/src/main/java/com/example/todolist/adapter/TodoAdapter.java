@@ -4,7 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,23 +47,38 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ToDoViewHolder
     }
 
     public interface OnChecked {
-        void onChecked();
+        void onChecked(ToDo todo);
+
+        void onItemClicked(String title, String description, String date);
     }
 
     class ToDoViewHolder extends RecyclerView.ViewHolder {
 
         // Declare your views
-        private CheckBox li_todo_title;
+        private CheckBox checkBox;
+        private TextView li_todo_title;
 
         public ToDoViewHolder(@NonNull View itemView) {
             super(itemView);
             // inflate the view
+            checkBox = itemView.findViewById(R.id.li_todo_check);
             li_todo_title = itemView.findViewById(R.id.li_todo_title);
 
-            li_todo_title.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                public void onClick(View view) {
+                    mListener.onChecked(ToDoList.get(getAdapterPosition()));
+                }
+            });
 
+            li_todo_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onItemClicked(
+                            ToDoList.get(getAdapterPosition()).getTitle(),
+                            ToDoList.get(getAdapterPosition()).getDescription(),
+                            ToDoList.get(getAdapterPosition()).getDate()
+                    );
                 }
             });
 
@@ -71,7 +86,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ToDoViewHolder
 
         private void bind(int position) {
             // Bind data
-            li_todo_title.setChecked(ToDoList.get(position).isChecked());
+            checkBox.setChecked(ToDoList.get(position).isChecked());
+            li_todo_title.setText(ToDoList.get(position).getTitle());
 
         }
     }

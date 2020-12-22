@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
@@ -60,10 +61,10 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/tvListTitle"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Lists :"
             android:textColor="#fff"
             android:textStyle="bold"
             android:textSize="24sp" />
@@ -80,6 +81,7 @@
 
 
     <Button
+        android:id="@+id/btnCreateNewTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="create new task here"
@@ -93,6 +95,16 @@
         android:paddingTop="8dp"
         android:layout_marginTop="8dp"
         android:paddingBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTodos"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/li_todo" />
 
 
 </LinearLayout>
