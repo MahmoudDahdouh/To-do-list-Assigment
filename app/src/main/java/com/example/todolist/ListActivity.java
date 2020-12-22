@@ -109,12 +109,13 @@ public class ListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onItemClicked(String title, String description, String date) {
+            public void onItemClicked(String id, String title, String description, String date) {
                 Intent intent = new Intent(ListActivity.this, TaskActivity.class);
 
                 intent.putExtra("task_title", title);
                 intent.putExtra("task_description", description);
                 intent.putExtra("task_date", date);
+                intent.putExtra("task_id", id);
 
                 startActivity(intent);
             }

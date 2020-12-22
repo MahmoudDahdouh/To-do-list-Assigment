@@ -50,38 +50,41 @@
         android:paddingEnd="16dp"
         android:orientation="vertical"
         android:background="@drawable/bg_task">
-        <TextView
-            android:id="@+id/tvTaskTitle"
-            android:layout_width="wrap_content"
+
+        <EditText
+            android:id="@+id/etTaskTitle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
-            android:textColor="#000"/>
+            android:textColor="#000" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="01 october, 00"/>
+            android:text="01 october, 00" />
+
         <View
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="#E5E5E5"/>
+            android:background="#E5E5E5" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
-            android:textSize="24sp"
-            />
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/tvTaskDescription"
+        <EditText
+            android:id="@+id/etTaskDescription"
             android:layout_marginTop="16dp"
             android:textSize="20sp"
             android:textColor="#707070"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="start" />
     </LinearLayout>
 
 </LinearLayout>

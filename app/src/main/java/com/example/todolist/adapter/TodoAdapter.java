@@ -49,7 +49,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ToDoViewHolder
     public interface OnChecked {
         void onChecked(ToDo todo);
 
-        void onItemClicked(String title, String description, String date);
+        void onItemClicked(String id, String title, String description, String date);
     }
 
     class ToDoViewHolder extends RecyclerView.ViewHolder {
@@ -75,6 +75,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ToDoViewHolder
                 @Override
                 public void onClick(View view) {
                     mListener.onItemClicked(
+                            ToDoList.get(getAdapterPosition()).getId(),
                             ToDoList.get(getAdapterPosition()).getTitle(),
                             ToDoList.get(getAdapterPosition()).getDescription(),
                             ToDoList.get(getAdapterPosition()).getDate()
