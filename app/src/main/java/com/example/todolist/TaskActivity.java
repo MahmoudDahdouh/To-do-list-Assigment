@@ -19,11 +19,15 @@ public class TaskActivity extends AppCompatActivity {
     private static final String TAG = "TaskActivity_tag";
     String task_title;
     String task_description;
-    private ImageView btnBack;
     String task_date;
     String task_id;
+    String list_id;
+    int list_size;
+
+    private ImageView btnBack;
     private EditText etTaskTitle, etTaskDescription;
     private TextView btnEdit;
+    private TextView tvDeleteTask;
     private FirebaseFirestore database;
 
     @Override
@@ -35,6 +39,7 @@ public class TaskActivity extends AppCompatActivity {
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
         btnEdit = findViewById(R.id.btnEdit);
+        tvDeleteTask = findViewById(R.id.tvDeleteTask);
 
         database = FirebaseFirestore.getInstance();
 
@@ -45,6 +50,8 @@ public class TaskActivity extends AppCompatActivity {
         task_description = i.getStringExtra("task_description");
         task_date = i.getStringExtra("task_date");
         task_id = i.getStringExtra("task_id");
+        list_id = i.getStringExtra("list_id");
+        list_size = i.getIntExtra("list_size", 0);
 
         etTaskTitle.setText(task_title);
         etTaskDescription.setText(task_description);
@@ -84,7 +91,6 @@ public class TaskActivity extends AppCompatActivity {
                             });
                 }
 
-
                 if (!description.equals(task_description)) {
                     database.collection("task")
                             .document(task_id)
@@ -106,5 +112,51 @@ public class TaskActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        tvDeleteTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTask(task_id);
+            }
+        });
+    }
+
+    private void deleteTask(final String task_id) {
+        database.collection("task")
+                .document(task_id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: delete task " + task_id);
+                        updateListSize();
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: delete task " + e.getMessage());
+                    }
+                });
+    }
+
+    private void updateListSize() {
+        database.collection("list")
+                .document(list_id)
+                .update("size", --list_size)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: update");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: failed " + e.getMessage());
+                    }
+                });
     }
 }

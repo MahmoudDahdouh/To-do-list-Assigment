@@ -36,6 +36,7 @@ public class ListActivity extends AppCompatActivity {
 
     private ImageView btnBack;
     private TextView tvListTitle;
+    private TextView tvDeleteList;
     private Button btnCreateNewTask;
     private RecyclerView rvTodos;
 
@@ -51,6 +52,7 @@ public class ListActivity extends AppCompatActivity {
         rvTodos = findViewById(R.id.rvTodos);
         btnBack = findViewById(R.id.btnBack);
         tvListTitle = findViewById(R.id.tvListTitle);
+        tvDeleteList = findViewById(R.id.tvDeleteList);
         btnCreateNewTask = findViewById(R.id.btnCreateNewTask);
 
         setupRecycler();
@@ -62,6 +64,13 @@ public class ListActivity extends AppCompatActivity {
         database = FirebaseFirestore.getInstance();
 
         loadList();
+
+        tvDeleteList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteList(listId);
+            }
+        });
 
         btnCreateNewTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +89,25 @@ public class ListActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void deleteList(String listId) {
+        database.collection("list")
+                .document(listId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: delete list " + listTitle);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: delete failed " + e.getMessage());
+                    }
+                });
     }
 
     private void setupRecycler() {
@@ -116,6 +144,8 @@ public class ListActivity extends AppCompatActivity {
                 intent.putExtra("task_description", description);
                 intent.putExtra("task_date", date);
                 intent.putExtra("task_id", id);
+                intent.putExtra("list_id", listId);
+                intent.putExtra("list_size", listSize);
 
                 startActivity(intent);
             }
@@ -126,6 +156,7 @@ public class ListActivity extends AppCompatActivity {
     private void loadList() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading ...");
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
         database.collection("task")
@@ -153,7 +184,8 @@ public class ListActivity extends AppCompatActivity {
                                 adapter.setList(list);
                                 listSize = list.size();
                             } else {
-                                Toast.makeText(ListActivity.this, "No List", Toast.LENGTH_SHORT).show();
+                                adapter.setList(list);
+                                Toast.makeText(ListActivity.this, "No Todos", Toast.LENGTH_SHORT).show();
                             }
                         }
                         progressDialog.dismiss();

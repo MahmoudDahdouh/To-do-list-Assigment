@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadList(String uid) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading ...");
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
         database.collection("list")
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                             if (list.size() != 0) {
                                 adapter.setList(list);
                             } else {
+                                adapter.setList(list);
                                 Toast.makeText(MainActivity.this, "No List", Toast.LENGTH_SHORT).show();
                             }
 

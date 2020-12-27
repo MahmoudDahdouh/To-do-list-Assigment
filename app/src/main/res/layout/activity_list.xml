@@ -70,6 +70,7 @@
             android:textSize="24sp" />
 
         <TextView
+            android:id="@+id/tvDeleteList"
             android:textColor="#BCB8B8"
             android:textSize="18sp"
             android:layout_gravity="center"

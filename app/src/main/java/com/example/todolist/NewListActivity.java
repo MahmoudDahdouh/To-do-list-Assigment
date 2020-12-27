@@ -52,6 +52,7 @@ public class NewListActivity extends AppCompatActivity {
                 } else {
 
                     final ProgressDialog progressDialog = new ProgressDialog(NewListActivity.this);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.setMessage("Loading ...");
                     progressDialog.show();
 

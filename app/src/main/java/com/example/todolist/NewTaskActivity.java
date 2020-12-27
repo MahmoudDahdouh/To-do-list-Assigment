@@ -79,6 +79,7 @@ public class NewTaskActivity extends AppCompatActivity {
 
         final ProgressDialog progressDialog = new ProgressDialog(NewTaskActivity.this);
         progressDialog.setMessage("Loading ...");
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
         final DocumentReference docRef = database

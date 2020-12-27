@@ -47,6 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading ...");
+        progressDialog.setCanceledOnTouchOutside(false);
 
         auth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
