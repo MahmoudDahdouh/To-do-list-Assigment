@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+
 public class TaskActivity extends AppCompatActivity {
     private static final String TAG = "TaskActivity_tag";
     String task_title;
@@ -28,6 +30,7 @@ public class TaskActivity extends AppCompatActivity {
     private EditText etTaskTitle, etTaskDescription;
     private TextView btnEdit;
     private TextView tvDeleteTask;
+    private TextView tvDate;
     private FirebaseFirestore database;
 
     @Override
@@ -40,6 +43,7 @@ public class TaskActivity extends AppCompatActivity {
         etTaskDescription = findViewById(R.id.etTaskDescription);
         btnEdit = findViewById(R.id.btnEdit);
         tvDeleteTask = findViewById(R.id.tvDeleteTask);
+        tvDate = findViewById(R.id.tvDate);
 
         database = FirebaseFirestore.getInstance();
 
@@ -55,6 +59,11 @@ public class TaskActivity extends AppCompatActivity {
 
         etTaskTitle.setText(task_title);
         etTaskDescription.setText(task_description);
+
+        // date
+        SimpleDateFormat DateFor = new SimpleDateFormat("dd MMMM yyyy, HH:mm");
+        String stringDate = DateFor.format(Long.parseLong(task_date));
+        tvDate.setText(stringDate);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
